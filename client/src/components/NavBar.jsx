@@ -1,10 +1,15 @@
-import React from 'react'
+import React,{useState} from 'react'
 import {search , thirdweb} from '../assets'
 import {CustomeButton} from './'
-import { Link } from 'react-router-dom';
+import { Link,useNavigate } from 'react-router-dom';
+import { logo, menu } from '../assets';
+import { navlinks } from '../constant';
 
 const address = '0x123';
 const NavBar = () => {
+  const[isActive ,setActive ] = useState('dashboard');
+  const[toggleDrawer,setToggelDrawer] = useState(false);
+
   return (
     <div>
     <div className="flex md:flex-row flex-col-reverse justify-between mb-[35px] gap-6">
@@ -28,11 +33,48 @@ const NavBar = () => {
      />
     {/* //Link of thirdweb profile */}
 
-    <Link to='/profile' className='h-[50px] w-[50px] bg-[#2e2e32] flex justify-center items-center  rounded-full'>
-      <img src={thirdweb} alt="thirdweb" className='h-[60%]'/>
+    <Link to='/profile'>
+       <div className='h-[50px] w-[50px] bg-[#2e2e32] flex justify-center items-center  rounded-full'>
+       <img src={thirdweb} alt="thirdweb" className='h-[60%]'/>
+       </div>
     </Link>
    </div>
 
+{/* Small screen navigation */}
+<div className="sm:hidden flex justify-between items-center relative">
+        <div className="w-[40px] h-[40px] rounded-[10px] bg-[#2c2f32] flex justify-center items-center cursor-pointer">
+           {/* //image of logo */}
+           <img src={logo} alt="logo" className='w-[24px] h-[24px] ' />
+
+          </div>
+        
+        {/* design hamburger */}
+         <img src={menu}
+          alt="menu"
+          className='w-[30px] h-[30px]'
+          onClick={()=>setToggelDrawer((prev)=>!prev)}
+          /> 
+
+          <div className={`absolute top-[60px] right-0 left-0 bg-[#1c1c24] z-10
+           shadow-secondary py-4 ${!toggleDrawer?'-translate-y-[100vh]':'translate-y-0'}
+            transition-all duration-700`}>
+            <ul className="mb-4">
+             {/* design icons */}
+              {navlinks.map((t)=>(
+                <li 
+                key={t.name}
+                className={`${isActive===t.name?''}`}
+                >
+                <img src={t.imgUrl} alt="" />
+                </li>
+              ))}
+            </ul>
+
+            <div className="flex mx-4">
+           {/* desgin custome button */}
+            </div>
+          </div>
+        </div>
  </div>
  </div>
   )
