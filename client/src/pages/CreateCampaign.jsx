@@ -1,6 +1,10 @@
 import React, { useState } from 'react'
 import { money } from '../assets'
 import { CustomeButton, FormField } from '../components'
+import { useStateContext } from '../context' 
+import {checkIfImage} from '../utils'
+import { ethers } from 'ethers'
+import {useNavigate} from 'react-router-dom'
 
 const CreateCampaign = () => {
   const [form, setForm] = useState({
@@ -12,12 +16,23 @@ const CreateCampaign = () => {
     image: ''
   });
 
+  // const {connect , address , createCampaign} = useStateContext();
+  const navigate = useNavigate();
   const inputFieldChange = (feildName,e) => {
     setForm({...form , [feildName]:e.target.value})
   }
   const HandleSubmit = (e) => {
     e.preventDefault();
-    console.log(form);
+    // checkIfImage(form.image, async(exist)=>{
+    //   if(exist){
+    //   await createCampaign({...form,target:ethers.utils.parseUnits(form.target,18)})
+    //   navigate('/')
+    //   }else{
+    //     console.log("Paste valid image url");
+    //     setForm({...form,image:''})
+    //   }
+    // })
+    
   }
   return (
     <div className="bg-[#1c1c24] flex justify-center items-center flex-col rounded-[10px] sm:p-10 p-4">
