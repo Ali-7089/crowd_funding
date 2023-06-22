@@ -1,5 +1,8 @@
 import React, { createContext, useContext } from "react";
 import { useContract, useContractWrite, useMetamask, useAddress } from '@thirdweb-dev/react'
+import { ethers } from "ethers";
+import moment from 'moment';
+
 const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
@@ -28,6 +31,22 @@ export const StateContextProvider = ({ children }) => {
       console.error("contract call failure", err);
     }
   }
+
+  const getAllCampaigns = async()=>{
+   const campaigns = await contract.call('getCampaigns')
+
+   const parseCamapaigns = campaigns.map((campaign,i)=>({
+    owner : campaign.owner,
+    title:campaign.title,
+    description:campaign.description,
+    image:campaign.image,
+    deadline:new Date(campaign.deadline).toDateString(),
+    target: ethers.utils.formatEther(campaign.target.toString()),
+    amountCollected: ethers.utils.formatEther(campaign.amountCollected.toString()),
+    id : i
+   }))
+   return parseCamapaigns;
+  }
   
 
   return (
@@ -36,6 +55,7 @@ export const StateContextProvider = ({ children }) => {
         connect,
         address,
         contract,
+        getAllCampaigns,
         createCampaign: publishCampaign
       }}
     >
