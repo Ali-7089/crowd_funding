@@ -16,24 +16,23 @@ const CreateCampaign = () => {
     image: ''
   });
 
-  // const {connect , address , createCampaign} = useStateContext();
+  const {connect , address , createCampaign} = useStateContext();
   const navigate = useNavigate();
   const inputFieldChange = (feildName,e) => {
     setForm({...form , [feildName]:e.target.value})
   }
-  const HandleSubmit = (e) => {
+  const HandleSubmit = async(e) => {
     e.preventDefault();
-    // checkIfImage(form.image, async(exist)=>{
-    //   if(exist){
-    //   await createCampaign({...form,target:ethers.utils.parseUnits(form.target,18)})
-    //   navigate('/')
-    //   }else{
-    //     console.log("Paste valid image url");
-    //     setForm({...form,image:''})
-    //   }
-    // })
-    
+    if(checkIfImage(form.image)){
+      await createCampaign({...form, target: ethers.utils.parseUnits(form.target,18)})
+      navigate('/')
+      }else {
+        console.log("paste valid image url");
+        setForm({...form, image:''})
+      }
+      console.log(form);
   }
+
   return (
     <div className="bg-[#1c1c24] flex justify-center items-center flex-col rounded-[10px] sm:p-10 p-4">
       <div className="flex justify-center items-center p-[16px] sm:min-w-[380px] bg-[#3a3a43] rounded-[10px]">

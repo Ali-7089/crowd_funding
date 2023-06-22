@@ -1,44 +1,47 @@
-import React, {createContext,useContext}  from "react";
-import {useContract , useContractWrite , useMetamask , useAddress} from '@thirdweb-dev/react'
-
+import React, { createContext, useContext } from "react";
+import { useContract, useContractWrite, useMetamask, useAddress } from '@thirdweb-dev/react'
 const StateContext = createContext();
 
-export const StateContextProvider = ({children})=>{
-  const {contract} = useContract('0x7E972AfE092c5E7F92EC137E40f5E2031c5711f3');
-  const {mutateAsync:createCampaign} = useContractWrite(contract,'createCampaign');
+export const StateContextProvider = ({ children }) => {
+ 
+  const { contract } = useContract("0xF9Ea24eBfBB2Aa453357c8785995798881931e33");
+  const { mutateAsync: createCampaign} = useContractWrite(contract, "createCampaign")
 
   const connect = useMetamask();
   const address = useAddress();
+  let add;
+  if(address)add = address;
 
-  const publishCampaign = async(form)=>{
-   try{
-    const data = await createCampaign([
-      address,
-      form.title,
-      form.description,
-      form.image,
-      new Date(form.deadline).getTime(),
-      form.target
-    ])
-
-    console.log("contract called successfully" , data);
-   }catch(error){
-    console.log("contract calling failed" , error)
-   }
+  const publishCampaign = async (form) => {
+    console.log("ander aaya")
+    try {
+      const data = await createCampaign({ args: [
+         add,
+         form.title,
+         form.description,
+         form.image, 
+         form.target, 
+         new Date(form.deadline).getTime()]
+        });
+      console.info("contract call successs", data);
+    } catch (err) {
+      console.error("contract call failure", err);
+    }
   }
+  
 
-  return(
+  return (
     <StateContext.Provider
-    value ={{
+      value={{
         connect,
         address,
         contract,
-        createCampaign:publishCampaign
-    }}
+        createCampaign: publishCampaign
+      }}
     >
-        {children}
+      {children}
     </StateContext.Provider>
   )
 }
 
-export const useStateContext = ()=> useContext(StateContext);
+export const useStateContext = () => useContext(StateContext);

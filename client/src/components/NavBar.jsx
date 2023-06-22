@@ -4,11 +4,12 @@ import { CustomeButton } from './'
 import { Link, useNavigate } from 'react-router-dom';
 import { logo, menu } from '../assets';
 import { navlinks } from '../constant';
+import { useStateContext } from '../context';
 
-const address = '0x123';
 const NavBar = () => {
   const [isActive, setActive] = useState('dashboard');
   const [toggleDrawer, setToggelDrawer] = useState(false);
+  const {connect , address} = useStateContext();
   const navigate = useNavigate();
   return (
     <div>
@@ -30,6 +31,10 @@ const NavBar = () => {
             btnType="button"
             title={address ? 'create campaign' : 'connect'}
             styles={address ? 'bg-[#4acd8d]' : 'bg-sky-500/100'}
+            handleClick={()=>{
+              if(address) navigate('create-campaign')
+              else connect();
+              }}
           />
           {/* //Link of thirdweb profile */}
 
@@ -82,6 +87,10 @@ const NavBar = () => {
                 btnType="button"
                 title={address ? 'create campaign' : 'connect'}
                 styles={address ? 'bg-[#4acd8d]' : 'bg-sky-500/100'}
+                handleClick={()=>{
+                if(address) navigate('create-campaign')
+                else connect();
+                }}
               />
             </div>
           </div>
