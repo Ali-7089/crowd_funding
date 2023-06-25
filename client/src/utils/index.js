@@ -7,6 +7,10 @@ export const checkIfImage = (url)=>{
     });
 }
 
+export const calculateBarGraph = (gaol , raisedAmount)=>{
+  return (raisedAmount*100)/gaol;
+}
+
 export const remainingDays = (deadline)=>{
   console.log(deadline, Date.now());
   const diff = new Date(deadline).toString() - Date.now().toString();

@@ -40,12 +40,31 @@ export const StateContextProvider = ({ children }) => {
     title:campaign.title,
     description:campaign.description,
     image:campaign.image,
-    deadline:new Date(campaign.deadline).toDateString(),
+    deadline: moment(campaign.deadline).format('MMMM Do YYYY, h:mm:ss a'),
     target: ethers.utils.formatEther(campaign.target.toString()),
     amountCollected: ethers.utils.formatEther(campaign.amountCollected.toString()),
     id : i
    }))
    return parseCamapaigns;
+  }
+
+  const getUserCampaign = async()=>{
+    const data = await getAllCampaigns();
+    const filteredCampaign = data.filter((t)=>t.owner === address);
+
+    return filteredCampaign;
+  }
+
+  const donate = async(id,amount)=>{
+    const data = await contract.call("donateToCampaign",[id],{value: ethers.utils.parseEther(amount)})
+    return data;
+  }
+
+  const getDonations = async(id)=>{
+  
+      let data = await contract.call("getDonators" , [id])
+      return data
+  
   }
   
 
@@ -56,7 +75,10 @@ export const StateContextProvider = ({ children }) => {
         address,
         contract,
         getAllCampaigns,
-        createCampaign: publishCampaign
+        createCampaign: publishCampaign,
+        getUserCampaign,
+        donate,
+        getDonations
       }}
     >
       {children}

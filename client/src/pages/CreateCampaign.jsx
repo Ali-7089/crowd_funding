@@ -16,7 +16,7 @@ const CreateCampaign = () => {
     image: ''
   });
 
-  const {connect , address , createCampaign} = useStateContext();
+  const { createCampaign} = useStateContext();
   const navigate = useNavigate();
   const inputFieldChange = (feildName,e) => {
     setForm({...form , [feildName]:e.target.value})
