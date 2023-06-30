@@ -12,8 +12,7 @@ export const calculateBarGraph = (gaol , raisedAmount)=>{
 }
 
 export const remainingDays = (deadline)=>{
-  console.log(deadline, Date.now());
-  const diff = new Date(deadline).toString() - Date.now().toString();
+  const diff = new Date(deadline*1000).getTime() - Date.now();
 
-  return diff
+  return Math.round(diff/(60*60*24*1000))
 }

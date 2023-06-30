@@ -1,36 +1,37 @@
 import React , {useState , useEffect} from 'react'
 import { useStateContext } from '../context'
 import { thirdweb } from '../assets'
-import { CountBox, CustomeButton } from '../components'
+import { CountBox, CustomeButton, Loader } from '../components'
 import { useLocation , useNavigate} from 'react-router-dom'
-import { calculateBarGraph } from '../utils'
+import { calculateBarGraph, remainingDays } from '../utils'
 
 const CampaignDetails = () => {
   const navigate = useNavigate();
   const [isLoading , setLoading] = useState(false);
   const[amount , setAmount] = useState('');
   const[donators, setDonators ] = useState([]);
-  const { donate } = useStateContext();
+  const {donate , getDonations,contract , address} = useStateContext();
   const {state} = useLocation();
 
-  // const handleDonate = async()=>{
-  //   setLoading(true);
-  //   await donate(state.id,amount);
-  //   setLoading(false)
-  //   navigate('/');
-  // }
-  // const fetchDonators = async()=>{
-  //  const data  = await getDonations(state.id);
-  //  console.log(data)
-  // }
+  const handleDonate = async()=>{
+    setLoading(true)
+    await donate(state.id,amount);
+    setLoading(false)
+    navigate('/');
+  }
+  const fetchDonators = async()=>{
+   const data  = await getDonations(state.id);
+   console.log(data)
+   setDonators(data);
+  }
 
-  // useEffect(()=>{
-  //  fetchDonators();
-  // },[contract , address])
+  useEffect(()=>{
+   fetchDonators();
+  },[contract , address])
 
   return (
     <div>
-    {isLoading && 'isLoading...'}
+    {isLoading && <Loader/>}
 
     <div className="w-full flex md:flex-row flex-col mt-10 gap-[30px]">
       <div className="flex-1 flex-col">
@@ -46,7 +47,7 @@ const CampaignDetails = () => {
 
       <div className="flex md:w-[150px] w-full flex-wrap justify-between gap-[30px]">
         {/* count box for remaining days */}
-        <CountBox title={"Days left"} value={state.deadline}/>
+        <CountBox title={"Days left"} value={remainingDays(state.deadline)}/>
         <CountBox title={"Raised Amount"} value={state.amountCollected}/>
         <CountBox title={"Donators"} value={donators.length}/>
        
@@ -82,7 +83,16 @@ const CampaignDetails = () => {
           <h4 className="font-epilogue font-semibold text-[18px] text-black uppercase">Donators</h4>
 
             <div className="mt-[20px] flex flex-col gap-4">
-             {/* render the donators */}
+             {donators.length>0?(
+              donators.map((t , index)=>(
+                <div key={index} className='flex justify-between items-center gap-3' >
+                  <p>{t.donator}</p>
+                  <p className='text-black'>{t.donation}</p>
+                </div>
+              ))
+             ):(
+              <p>No donator yet</p>
+             )}
             </div>
         </div>
       </div>
@@ -113,7 +123,7 @@ const CampaignDetails = () => {
               btnType="button"
               title="Fund Campaign"
               styles="w-full bg-[#8c6dfd]"
-              // handleClick={handleDonate}
+              handleClick={handleDonate}
             />
           </div>
         </div>

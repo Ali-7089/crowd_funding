@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import {Card} from './index'
 
 const DisplayCampaign = ({title , loading , campaigns}) => {
+  console.log(campaigns)
     const navigate = useNavigate();
     const handleNavigate = (campaign)=>{
       navigate(`/campaign-details/:${campaign.title}` , {state:campaign})

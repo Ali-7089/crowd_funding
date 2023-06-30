@@ -7,7 +7,7 @@ const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
  
-  const { contract } = useContract("0xF9Ea24eBfBB2Aa453357c8785995798881931e33");
+  const { contract } = useContract("0xeB6a1D73C800f83f5c67716B5E3799867573409a");
   const { mutateAsync: createCampaign} = useContractWrite(contract, "createCampaign")
 
   const connect = useMetamask();
@@ -23,9 +23,10 @@ export const StateContextProvider = ({ children }) => {
          form.title,
          form.description,
          form.image, 
+         Math.floor(new Date(form.deadline).getTime()/1000),
          form.target, 
-         new Date(form.deadline).getTime()]
-        });
+        ]
+});
       console.info("contract call successs", data);
     } catch (err) {
       console.error("contract call failure", err);
@@ -40,7 +41,7 @@ export const StateContextProvider = ({ children }) => {
     title:campaign.title,
     description:campaign.description,
     image:campaign.image,
-    deadline: moment(campaign.deadline).format('MMMM Do YYYY, h:mm:ss a'),
+    deadline: campaign.deadline._hex,
     target: ethers.utils.formatEther(campaign.target.toString()),
     amountCollected: ethers.utils.formatEther(campaign.amountCollected.toString()),
     id : i
@@ -63,8 +64,17 @@ export const StateContextProvider = ({ children }) => {
   const getDonations = async(id)=>{
   
       let data = await contract.call("getDonators" , [id])
-      return data
-  
+      const numberOfCampaign = data[0].length
+
+      let parseDonation = []
+
+      for(var i=0;i<numberOfCampaign;i++){
+       parseDonation.push({
+        donator : data[0][i],
+        donation: ethers.utils.formatEther(data[1][i].toString())
+       })
+      }
+      return parseDonation;
   }
   
 

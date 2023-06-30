@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { money } from '../assets'
-import { CustomeButton, FormField } from '../components'
+import { CustomeButton, FormField, Loader } from '../components'
 import { useStateContext } from '../context' 
 import {checkIfImage} from '../utils'
 import { ethers } from 'ethers'
@@ -21,10 +21,13 @@ const CreateCampaign = () => {
   const inputFieldChange = (feildName,e) => {
     setForm({...form , [feildName]:e.target.value})
   }
+  const[loading , setLoading] = useState(false)
   const HandleSubmit = async(e) => {
     e.preventDefault();
     if(checkIfImage(form.image)){
-      await createCampaign({...form, target: ethers.utils.parseUnits(form.target,18)})
+      setLoading(true)
+      await createCampaign({...form,target: ethers.utils.parseUnits(form.target,18)})
+      setLoading(false)
       navigate('/')
       }else {
         console.log("paste valid image url");
@@ -35,6 +38,7 @@ const CreateCampaign = () => {
 
   return (
     <div className="bg-[#1c1c24] flex justify-center items-center flex-col rounded-[10px] sm:p-10 p-4">
+      { loading && <Loader/>}
       <div className="flex justify-center items-center p-[16px] sm:min-w-[380px] bg-[#3a3a43] rounded-[10px]">
         <h1 className="font-epilogue font-bold sm:text-[25px] text-[18px] leading-[38px] text-white">Start a Campaign</h1>
       </div>
